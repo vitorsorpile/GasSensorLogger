@@ -12,11 +12,16 @@ class Server:
         self.port = port
         self.threads = []
         self.mutex = Lock()
+
+        if not os.path.exists(self.DATABASE_PATH):
+            print(f'Criando pasta para o banco de dados em {self.DATABASE_PATH}')
+            os.mkdir(self.DATABASE_PATH)
         
         self.s = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
         # self.s.settimeout(5)
         self.s.setsockopt(socket.SOL_SOCKET, socket.SO_REUSEADDR, 1)
         self.s.bind((address, port))
+        print(self.s)
         
         print("socket binded to port", port)
 
@@ -53,7 +58,6 @@ class Server:
             self.s.close()
         except Exception as e:
             print(e)
-
 
 
     def handle_sensor(self, client, address):
