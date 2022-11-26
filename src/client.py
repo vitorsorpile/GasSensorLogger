@@ -6,7 +6,7 @@ from time import sleep
 s = socket.socket()        
  
 # Define the port on which you want to connect
-port = 8080               
+port = 8754               
  
 # connect to the server on local computer
 s.connect(('127.0.0.1', port))
@@ -25,8 +25,13 @@ while True:
         break
 
     response = ''
-    while('EOF' not in response):
+    while(1):
         response = s.recv(1024).decode()
+      
+        if (response.find('EOF') != -1):
+            response = response.replace('EOF', '\n')
+            break
+        
         print(response, end='')
         if response.startswith('ERRO'):
             # print('Erro detectado')
