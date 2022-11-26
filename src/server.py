@@ -66,17 +66,21 @@ class Server:
         while (True):
             
             msg = client.recv(1024).decode()
-            
+
             if not msg or self.stop_threads == True:
                 client.close()
                 break
+            
             self.mutex.acquire()
             try:
                 print(f'sensor enviou o valor {msg}')
                 now = datetime.now()
                 today = now.strftime('%Y-%m-%d')
+                values = msg.strip().split('\n')
+
                 with open(self.DATABASE_PATH + today + '.txt', 'a') as file:
-                    file.write(now.strftime('%Y-%m-%d %H:%M:%S - ') +  msg + '\n')
+                    for value in values:
+                        file.write(now.strftime('%Y-%m-%d %H:%M:%S - ') +  value + '\n')
             finally:
                 self.mutex.release()
             
@@ -119,7 +123,7 @@ class Server:
                     if os.path.exists(filePath):
                         with open(filePath, 'r') as file:
                             for line in file:
-                                print(f'Sent {msg} to {client}')
+                                #print(f'Sent {msg} to {client}')
                                 client.send(line.encode())
                     else:
                         client.send(f'Não há dados disponível para o dia {date}\n'.encode()) 
@@ -142,5 +146,5 @@ def daterange(start_date, end_date):
         yield (datetime.strftime(start_date + timedelta(days = n), "%Y-%m-%d"))
 
 if __name__ == '__main__':
-    server = Server('', 8080)
+    server = Server('', 8754)
     server.start()
