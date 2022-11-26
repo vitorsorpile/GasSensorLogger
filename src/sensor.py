@@ -4,7 +4,7 @@ from time import sleep
  
 
 s = socket.socket()        
-port = 8080              
+port = 8754             
 s.connect(('127.0.0.1', port))
 
 
